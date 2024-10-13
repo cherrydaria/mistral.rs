@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://sneg.top/uploads/posts/2023-03/1679721653_sneg-top-p-koshechki-sobachki-zastavka-instagram-48.jpg'); /* Подгружаем картинку из папки */
+            background-size: cover; /* Заставит изображение занимать весь фон */
+            background-position: center; /* Центрирует изображение */
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: white; /* Цвет текста заголовка */
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон для чата */
+            width: 80%; /* Ширина окна чата */
+            max-width: 600px; /* Максимальная ширина окна чата */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%; /* Максимальная ширина сообщения */
+            clear: both; /* Очистка обтекания */
+        }
+        .user {
+            background-color: #e1f5fe;
+            margin-left: auto; /* Выравнивание по правому краю */
+            text-align: right;
+        }
+        .assistant {
+            background-color: #ffe0b2;
+            margin-right: auto; /* Выравнивание по левому краю */
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            margin: 20px auto;
+            width: 80%; /* Ширина формы */
+            max-width: 600px; /* Максимальная ширина формы */
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <div id="chatbox"></div>
+    <form id="chat-form">
+        <input type="text" id="user_input" name="user_input" placeholder="Enter your message here..." required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const chatbox = document.getElementById('chatbox');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const input = document.getElementById('user_input').value;
+            chatbox.innerHTML += `<div class="message user"><strong>You:</strong> ${input}</div>`;
+            document.getElementById('user_input').value = '';
+
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_input: input }),
+            });
+
+            const data = await response.text();
+            chatbox.innerHTML += `<div class="message assistant"><strong>Assistant:</strong> ${data}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight; // Прокрутка вниз
+        });
+    </script>
+</body>
+</html>
